@@ -1,9 +1,13 @@
 package libraryapplication;
 
+import businesslogiclayer.Librarian;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.SQLException;
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.ResultSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class DatabaseHandler extends Configs{
     private Connection dbConnection;
@@ -23,7 +27,22 @@ public class DatabaseHandler extends Configs{
         }
     }
     
-    public void authorizationUser() {
-        
+    public ResultSet authorizationUser(Librarian librarian) {
+        ResultSet result = null;
+        String select = "SELECT * FROM " + Const.LIBRARIAN_TABLE + " WHERE " +
+                Const.LIBRARIANS_PHONE + "=? AND " + Const.LIBRARIANS_PASSWORD + "=?";
+        try {
+            try {
+                PreparedStatement prSt = getDbConnection().prepareStatement(select);
+                prSt.setString(1, librarian.getPhone());
+                prSt.setString(2, librarian.getPassword());
+                result = prSt.executeQuery();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        } catch (ClassNotFoundException ex) {
+            ex.printStackTrace();
+        }
+        return result;
     }
 }

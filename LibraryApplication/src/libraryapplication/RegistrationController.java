@@ -5,12 +5,10 @@
  */
 package libraryapplication;
 
+import businesslogiclayer.Librarian;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 /**
@@ -88,16 +86,16 @@ public class RegistrationController extends javax.swing.JFrame {
 
         getContentPane().add(PanelTitle, java.awt.BorderLayout.PAGE_START);
 
-        PanelMain.setBackground(new java.awt.Color(255, 255, 153));
+        PanelMain.setBackground(new java.awt.Color(255, 255, 204));
         PanelMain.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 5, 20));
 
-        PanelForm.setBackground(new java.awt.Color(255, 255, 153));
+        PanelForm.setBackground(new java.awt.Color(255, 255, 204));
         PanelForm.setLayout(new javax.swing.BoxLayout(PanelForm, javax.swing.BoxLayout.Y_AXIS));
 
-        PanelExtra.setBackground(new java.awt.Color(255, 255, 153));
+        PanelExtra.setBackground(new java.awt.Color(255, 255, 204));
         PanelExtra.setLayout(new javax.swing.BoxLayout(PanelExtra, javax.swing.BoxLayout.X_AXIS));
 
-        PanelLabel.setBackground(new java.awt.Color(255, 255, 153));
+        PanelLabel.setBackground(new java.awt.Color(255, 255, 204));
         PanelLabel.setLayout(new java.awt.GridLayout(12, 0));
 
         LabelSurname.setFont(new java.awt.Font("Gungsuh", 1, 24)); // NOI18N
@@ -144,7 +142,7 @@ public class RegistrationController extends javax.swing.JFrame {
 
         PanelExtra.add(PanelLabel);
 
-        PanelTextField.setBackground(new java.awt.Color(255, 255, 153));
+        PanelTextField.setBackground(new java.awt.Color(255, 255, 204));
         PanelTextField.setLayout(new java.awt.GridLayout(12, 0));
 
         TextSurname.setPreferredSize(new java.awt.Dimension(300, 30));
@@ -197,7 +195,7 @@ public class RegistrationController extends javax.swing.JFrame {
 
         PanelForm.add(PanelExtra);
 
-        PanelButton.setBackground(new java.awt.Color(255, 255, 153));
+        PanelButton.setBackground(new java.awt.Color(255, 255, 204));
         PanelButton.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
 
         BtnRegistration.setFont(new java.awt.Font("Gungsuh", 0, 18)); // NOI18N
@@ -224,9 +222,17 @@ public class RegistrationController extends javax.swing.JFrame {
         try {
             value.Telephone(TextPhone.getText());
             value.Email(TextPassword.getText());
+            
+            String firstName = TextSurname.getText();
+            String lastName = TextName.getText();
+            String patronymic = TextPatronymic.getText();
+            String address = TextAddress.getText();
+            String phone = TextPhone.getText();
+            String password = TextPassword.getText();
+            Librarian librarian = new Librarian(firstName, lastName, 
+                    patronymic, address, phone, password);
             try {
-                registrationUser(TextSurname.getText(), TextName.getText(), TextPatronymic.getText(),
-                        TextAddress.getText(), TextPhone.getText(), TextPassword.getText());
+                registrationUser(librarian);
                 this.dispose(); 
             } catch (Exception exception) {
                 JOptionPane.showMessageDialog(this, "Невозможно добавить пользователя!"); 
@@ -237,8 +243,7 @@ public class RegistrationController extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_BtnRegistrationActionPerformed
 
-    public void registrationUser(String firstName, String lastName, 
-            String patronymic, String address, String phone, String password) 
+    public void registrationUser(Librarian librarian) 
             throws ClassNotFoundException, SQLException {
         String insert = "INSERT INTO " + Const.LIBRARIAN_TABLE + "(" +
                 Const.LIBRARIANS_SURNAME + ", " + Const.LIBRARIANS_NAME + "," +
@@ -246,12 +251,12 @@ public class RegistrationController extends javax.swing.JFrame {
                 ", " + Const.LIBRARIANS_PHONE + ", " + Const.LIBRARIANS_PASSWORD + 
                 ") " + "VALUES(?,?,?,?,?,?)";
         PreparedStatement prSt = connect.prepareStatement(insert);
-        prSt.setString(1, firstName);
-        prSt.setString(2, lastName);
-        prSt.setString(3, patronymic);
-        prSt.setString(4, address);
-        prSt.setString(5, phone);
-        prSt.setString(6, password);
+        prSt.setString(1, librarian.getFirstName());
+        prSt.setString(2, librarian.getLastName());
+        prSt.setString(3, librarian.getPatronymic());
+        prSt.setString(4, librarian.getAddress());
+        prSt.setString(5, librarian.getPhone());
+        prSt.setString(6, librarian.getPassword());
         prSt.executeUpdate();
     }
     

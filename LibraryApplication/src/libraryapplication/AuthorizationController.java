@@ -1,14 +1,18 @@
 package libraryapplication;
 
+import businesslogiclayer.Librarian;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.regex.Pattern;
 import javax.swing.JOptionPane;
 
 public class AuthorizationController extends javax.swing.JFrame {
     private DatabaseHandler connect;
     private RegistrationController registration;
+    private PersonalAccountController personalAccount;
     
     public AuthorizationController() {
         initComponents();
@@ -61,16 +65,16 @@ public class AuthorizationController extends javax.swing.JFrame {
 
         getContentPane().add(PanelTitle, java.awt.BorderLayout.PAGE_START);
 
-        PanelMain.setBackground(new java.awt.Color(255, 255, 153));
+        PanelMain.setBackground(new java.awt.Color(255, 255, 204));
         PanelMain.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 5, 30));
 
-        PanelForm.setBackground(new java.awt.Color(255, 255, 153));
+        PanelForm.setBackground(new java.awt.Color(255, 255, 204));
         PanelForm.setLayout(new javax.swing.BoxLayout(PanelForm, javax.swing.BoxLayout.Y_AXIS));
 
-        PanelExtra.setBackground(new java.awt.Color(255, 255, 153));
+        PanelExtra.setBackground(new java.awt.Color(255, 255, 204));
         PanelExtra.setLayout(new javax.swing.BoxLayout(PanelExtra, javax.swing.BoxLayout.X_AXIS));
 
-        PanelLabel.setBackground(new java.awt.Color(255, 255, 153));
+        PanelLabel.setBackground(new java.awt.Color(255, 255, 204));
         PanelLabel.setLayout(new java.awt.GridLayout(4, 0));
 
         LabelLogin.setFont(new java.awt.Font("Gungsuh", 1, 24)); // NOI18N
@@ -85,7 +89,7 @@ public class AuthorizationController extends javax.swing.JFrame {
 
         PanelExtra.add(PanelLabel);
 
-        PanelTextField.setBackground(new java.awt.Color(255, 255, 153));
+        PanelTextField.setBackground(new java.awt.Color(255, 255, 204));
         PanelTextField.setLayout(new java.awt.GridLayout(4, 0));
 
         try {
@@ -111,7 +115,7 @@ public class AuthorizationController extends javax.swing.JFrame {
 
         PanelForm.add(PanelExtra);
 
-        PanelButton.setBackground(new java.awt.Color(255, 255, 153));
+        PanelButton.setBackground(new java.awt.Color(255, 255, 204));
         PanelButton.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
 
         BtnEntry.setFont(new java.awt.Font("Gungsuh", 0, 18)); // NOI18N
@@ -163,6 +167,40 @@ public class AuthorizationController extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_BtnRegistrationActionPerformed
 
+    private void loginUser(String loginText, String loginPassword) {
+        try {
+            Librarian librarian = new Librarian();
+            librarian.setPhone(loginText);
+            librarian.setPassword(loginPassword);
+            ResultSet resSet = connect.authorizationUser(librarian);
+            int counter = 0;
+            String firstName = "", secondName = "", patronymic = "";
+            ResultSetMetaData md = resSet.getMetaData();  
+            while (resSet.next()) {
+                ArrayList<Object> mass = new ArrayList(); 
+                for(int i=1;i<=md.getColumnCount();i++) { 
+                    mass.add(resSet.getObject(i)); 
+                } 
+                mass.toArray();
+                firstName = mass.get(1).toString(); 
+                secondName = mass.get(2).toString();
+                patronymic = mass.get(3).toString();
+                counter++;
+            }
+            if (counter > 0) {
+                personalAccount = new PersonalAccountController(connect.getDbConnection(),
+                        firstName, secondName, patronymic);
+                this.dispose(); 
+                //JOptionPane.showMessageDialog(this, "Авторизация прошла успешно!");
+            }
+            else {
+                JOptionPane.showMessageDialog(this, "Нет такого пользователя!!!");
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+    
     /**
      * @param args the command line arguments
      */
@@ -218,8 +256,4 @@ public class AuthorizationController extends javax.swing.JFrame {
     private javax.swing.JFormattedTextField TextLogin;
     private javax.swing.JPasswordField TextPassword;
     // End of variables declaration//GEN-END:variables
-
-    private void loginUser(String loginText, String loginPassword) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
 }
