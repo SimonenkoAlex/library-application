@@ -1,13 +1,23 @@
 package libraryapplication;
 
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.regex.Pattern;
 import javax.swing.JOptionPane;
 
 public class AuthorizationController extends javax.swing.JFrame {
+    private DatabaseHandler connect;
+    private RegistrationController registration;
     
     public AuthorizationController() {
         initComponents();
+        connect = new DatabaseHandler();
     }
 
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {  
+        connect.destroy(); 
+    } 
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -94,7 +104,7 @@ public class AuthorizationController extends javax.swing.JFrame {
 
         LabelHint2.setFont(new java.awt.Font("Gungsuh", 2, 14)); // NOI18N
         LabelHint2.setForeground(new java.awt.Color(255, 51, 51));
-        LabelHint2.setText("* количество символов < 20");
+        LabelHint2.setText("* количество символов более 8");
         PanelTextField.add(LabelHint2);
 
         PanelExtra.add(PanelTextField);
@@ -115,6 +125,11 @@ public class AuthorizationController extends javax.swing.JFrame {
 
         BtnRegistration.setFont(new java.awt.Font("Gungsuh", 0, 18)); // NOI18N
         BtnRegistration.setText("Регистрация");
+        BtnRegistration.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnRegistrationActionPerformed(evt);
+            }
+        });
         PanelButton.add(BtnRegistration);
 
         PanelForm.add(PanelButton);
@@ -137,6 +152,16 @@ public class AuthorizationController extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Логин и/или пароль не был введён!");
         }
     }//GEN-LAST:event_BtnEntryActionPerformed
+
+    private void BtnRegistrationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnRegistrationActionPerformed
+        try {
+            registration = new RegistrationController(connect.getDbConnection());
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(AuthorizationController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(AuthorizationController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_BtnRegistrationActionPerformed
 
     /**
      * @param args the command line arguments

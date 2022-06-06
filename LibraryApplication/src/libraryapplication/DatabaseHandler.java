@@ -3,6 +3,7 @@ package libraryapplication;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.PreparedStatement;
 
 public class DatabaseHandler extends Configs{
     private Connection dbConnection;
@@ -20,5 +21,9 @@ public class DatabaseHandler extends Configs{
             try{ dbConnection.close();
             } catch(Exception e){} 
         }
+    }
+    
+    public void authorizationUser() {
+        
     }
 }
