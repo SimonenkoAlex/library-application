@@ -22,18 +22,17 @@ import javax.swing.table.TableModel;
  * @author Flash
  */
 public class PersonalAccountController extends javax.swing.JFrame {
-    public DatabaseHandler connect;
+    private DatabaseHandler con;
     private Connection dbconnect;
     //public EditBook editBook;
     //public EditReader editReader;
-    //public AddBook addBook;
+    public AddBook addBook;
     //public AddReader addReader;
     //public FindBook findBook;
     //public FindReader findReader;
     
     public PersonalAccountController() {
         initComponents();
-        connect = new DatabaseHandler();
     }
     
     public PersonalAccountController(Connection myConnect, String firstName,
@@ -45,8 +44,8 @@ public class PersonalAccountController extends javax.swing.JFrame {
         LabelFullname.setText(firstName + " " + lastName.substring(0, 1) + "." + patronymic.substring(0, 1) + ".");
     }
     
-    private void formWindowClosing(java.awt.event.WindowEvent evt) {  
-        connect.destroy(); 
+    private void formWindowClosing(java.awt.event.WindowEvent evt) throws SQLException {  
+        dbconnect.close();
     } 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -78,6 +77,7 @@ public class PersonalAccountController extends javax.swing.JFrame {
         TableView2 = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Библиотечный фонд \"ОмГТУ\"");
         setPreferredSize(new java.awt.Dimension(950, 450));
         setResizable(false);
         getContentPane().setLayout(new javax.swing.BoxLayout(getContentPane(), javax.swing.BoxLayout.Y_AXIS));
@@ -98,7 +98,8 @@ public class PersonalAccountController extends javax.swing.JFrame {
         EditPanel.setBackground(new java.awt.Color(255, 255, 204));
         EditPanel.setLayout(new javax.swing.BoxLayout(EditPanel, javax.swing.BoxLayout.LINE_AXIS));
 
-        Show.setText("Show");
+        Show.setFont(new java.awt.Font("Gungsuh", 0, 12)); // NOI18N
+        Show.setText("Отображение");
         Show.setMaximumSize(new java.awt.Dimension(90, 25));
         Show.setMinimumSize(new java.awt.Dimension(90, 25));
         Show.setPreferredSize(new java.awt.Dimension(90, 25));
@@ -109,7 +110,8 @@ public class PersonalAccountController extends javax.swing.JFrame {
         });
         EditPanel.add(Show);
 
-        Add.setText("Add");
+        Add.setFont(new java.awt.Font("Gungsuh", 0, 12)); // NOI18N
+        Add.setText("Добавление");
         Add.setMaximumSize(new java.awt.Dimension(90, 25));
         Add.setMinimumSize(new java.awt.Dimension(90, 25));
         Add.setPreferredSize(new java.awt.Dimension(90, 25));
@@ -120,7 +122,8 @@ public class PersonalAccountController extends javax.swing.JFrame {
         });
         EditPanel.add(Add);
 
-        Edit.setText("Edit");
+        Edit.setFont(new java.awt.Font("Gungsuh", 0, 12)); // NOI18N
+        Edit.setText("Редактирование");
         Edit.setMaximumSize(new java.awt.Dimension(90, 25));
         Edit.setMinimumSize(new java.awt.Dimension(90, 25));
         Edit.setPreferredSize(new java.awt.Dimension(90, 25));
@@ -131,7 +134,8 @@ public class PersonalAccountController extends javax.swing.JFrame {
         });
         EditPanel.add(Edit);
 
-        Delete.setText("Delete");
+        Delete.setFont(new java.awt.Font("Gungsuh", 0, 12)); // NOI18N
+        Delete.setText("Удаление");
         Delete.setMaximumSize(new java.awt.Dimension(90, 25));
         Delete.setMinimumSize(new java.awt.Dimension(90, 25));
         Delete.setPreferredSize(new java.awt.Dimension(90, 25));
@@ -142,7 +146,8 @@ public class PersonalAccountController extends javax.swing.JFrame {
         });
         EditPanel.add(Delete);
 
-        Clear.setText("Clear");
+        Clear.setFont(new java.awt.Font("Gungsuh", 0, 12)); // NOI18N
+        Clear.setText("Очистка");
         Clear.setMaximumSize(new java.awt.Dimension(90, 25));
         Clear.setMinimumSize(new java.awt.Dimension(90, 25));
         Clear.setPreferredSize(new java.awt.Dimension(90, 25));
@@ -153,7 +158,8 @@ public class PersonalAccountController extends javax.swing.JFrame {
         });
         EditPanel.add(Clear);
 
-        Find.setText("Find");
+        Find.setFont(new java.awt.Font("Gungsuh", 0, 12)); // NOI18N
+        Find.setText("Поиск");
         Find.setMaximumSize(new java.awt.Dimension(90, 25));
         Find.setMinimumSize(new java.awt.Dimension(90, 25));
         Find.setPreferredSize(new java.awt.Dimension(90, 25));
@@ -164,7 +170,8 @@ public class PersonalAccountController extends javax.swing.JFrame {
         });
         EditPanel.add(Find);
 
-        Query.setText("Query");
+        Query.setFont(new java.awt.Font("Gungsuh", 0, 12)); // NOI18N
+        Query.setText("Отчёты");
         Query.setMaximumSize(new java.awt.Dimension(90, 25));
         Query.setMinimumSize(new java.awt.Dimension(90, 25));
         Query.setPreferredSize(new java.awt.Dimension(90, 25));
@@ -175,7 +182,8 @@ public class PersonalAccountController extends javax.swing.JFrame {
         });
         EditPanel.add(Query);
 
-        SelectTable.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Ticket", "Seance", "Films", "Cashier" }));
+        SelectTable.setFont(new java.awt.Font("Gungsuh", 0, 14)); // NOI18N
+        SelectTable.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Книги", "Читатели" }));
         EditPanel.add(SelectTable);
 
         getContentPane().add(EditPanel);
@@ -184,7 +192,7 @@ public class PersonalAccountController extends javax.swing.JFrame {
         TablePanelAll.setLayout(new java.awt.GridLayout(1, 1));
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 204));
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Books", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Gungsuh", 0, 18))); // NOI18N
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Книги", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Gungsuh", 0, 18))); // NOI18N
 
         jScrollPane1.setBackground(new java.awt.Color(255, 255, 204));
         jScrollPane1.setPreferredSize(new java.awt.Dimension(450, 300));
@@ -205,10 +213,9 @@ public class PersonalAccountController extends javax.swing.JFrame {
         jPanel1.add(jScrollPane1);
 
         TablePanelAll.add(jPanel1);
-        jPanel1.getAccessibleContext().setAccessibleName("Books");
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 204));
-        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Readers", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Gungsuh", 0, 18))); // NOI18N
+        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Читатели", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Gungsuh", 0, 18))); // NOI18N
 
         jScrollPane2.setBackground(new java.awt.Color(255, 255, 204));
         jScrollPane2.setPreferredSize(new java.awt.Dimension(450, 300));
@@ -246,9 +253,9 @@ public class PersonalAccountController extends javax.swing.JFrame {
         // TODO add your handling code here:
         switch(this.SelectTable.getSelectedIndex()) {
             // по аналогии с функцией удаления записей из БД определим рабочую таблицу
-            //case 0: addTicket = new AddTicket(connect.getDbConnection()); break;
+            case 0: // вызов соответствующей рабочей таблицы формы
+                addBook = new AddBook(dbconnect); break;
             //case 1: addSeance = new AddSeance(connect.getDbConnection()); break;
-            // вызов соответствующей рабочей таблицы формы
         }
     }//GEN-LAST:event_AddActionPerformed
 
@@ -261,12 +268,12 @@ public class PersonalAccountController extends javax.swing.JFrame {
             id = TableView1.getModel().getValueAt(select[0], 0).toString();
             // так как в таблице в первой колонке размещен id записи, то после его определения
             // передадим его и текущее соединение с БД в конструктор формы для редактирования
-            //try { editTicket = new EditTicket(connect.getDbConnection(), id); }
+            //try { editTicket = new EditTicket(con.getDbConnection(), id); }
             //catch (Exception e) { JOptionPane.showMessageDialog(this, "Select row!"); }
             break;
             case 1: select = TableView2.getSelectedRows();
             id = TableView2.getModel().getValueAt(select[0], 0).toString();
-            //try { editSeance = new EditSeance(connect.getDbConnection(), id); }
+            //try { editSeance = new EditSeance(con.getDbConnection(), id); }
             //catch (Exception e) { JOptionPane.showMessageDialog(this, "Select row!"); }
             break;
         }
@@ -284,7 +291,7 @@ public class PersonalAccountController extends javax.swing.JFrame {
         String query;
         Statement stmt = null;
         try{
-            stmt = connect.getDbConnection().createStatement();
+            stmt = con.getDbConnection().createStatement();
             switch(numOfTable) { // также в зависимости от выбранной таблицы сформируем запрос к СУБД на удаление записей БД
                 case 0: for(int i=0;i<select.length;i++) {
                     // организуем цикл для удаления всех выделенных строк

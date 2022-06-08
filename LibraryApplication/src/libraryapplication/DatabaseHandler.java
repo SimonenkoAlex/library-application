@@ -20,6 +20,8 @@ public class DatabaseHandler extends Configs{
         return dbConnection;
     }
     
+    public Connection getMyConnection(){ return dbConnection; }
+    
     public void destroy(){ 
         if(dbConnection !=null){ 
             try{ dbConnection.close();
