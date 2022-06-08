@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package libraryapplication;
 
 import databaselayer.Const;
@@ -19,12 +14,7 @@ import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
-/**
- *
- * @author Flash
- */
 public class PersonalAccountController extends javax.swing.JFrame {
-    private DatabaseHandler con;
     private Connection dbconnect;
     //public EditBook editBook;
     //public EditReader editReader;
@@ -293,17 +283,19 @@ public class PersonalAccountController extends javax.swing.JFrame {
         String query;
         Statement stmt = null;
         try{
-            stmt = con.getDbConnection().createStatement();
+            stmt = dbconnect.createStatement();
             switch(numOfTable) { // также в зависимости от выбранной таблицы сформируем запрос к СУБД на удаление записей БД
                 case 0: for(int i=0;i<select.length;i++) {
                     // организуем цикл для удаления всех выделенных строк
-                    query = "DELETE FROM ticket WHERE ticket_id="+TableView1.getModel().getValueAt(select[i], 0).toString();
+                    query = "DELETE FROM " + Const.BOOKS_TABLE + " WHERE " + Const.BOOKS_ID 
+                            + "=" + TableView1.getModel().getValueAt(select[i], 0).toString();
                     stmt.execute(query);
                 }
                 break;
                 case 1: for(int i=0;i<select.length;i++) {
                     // организуем цикл для удаления всех выделенных строк
-                    query = "DELETE FROM seance WHERE seance_id="+TableView2.getModel().getValueAt(select[i], 0).toString();
+                    query = "DELETE FROM " + Const.READERS_TABLE + " WHERE " + Const.READERS_ID 
+                            + "=" + TableView2.getModel().getValueAt(select[i], 0).toString();
                     stmt.execute(query);
                 }
                 break;
@@ -311,8 +303,6 @@ public class PersonalAccountController extends javax.swing.JFrame {
         }
         catch(SQLException ex){
             JOptionPane.showMessageDialog(this, "Error!");
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(PersonalAccountController.class.getName()).log(Level.SEVERE, null, ex);
         } //  выводим сообщение об ошибке при возникновении исключительной ситуации
     }//GEN-LAST:event_DeleteActionPerformed
 
