@@ -1,4 +1,4 @@
-package libraryapplication;
+package databaselayer;
 
 public class Configs {
     protected String dbHost = "localhost";

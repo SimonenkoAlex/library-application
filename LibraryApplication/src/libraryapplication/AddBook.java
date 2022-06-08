@@ -1,5 +1,6 @@
 package libraryapplication;
 
+import databaselayer.Const;
 import java.sql.*;
 import javax.swing.JOptionPane;
 
@@ -46,11 +47,12 @@ public class AddBook extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Добавление новой книги");
-        setPreferredSize(new java.awt.Dimension(500, 500));
+        setPreferredSize(new java.awt.Dimension(500, 400));
         setResizable(false);
         getContentPane().setLayout(new javax.swing.BoxLayout(getContentPane(), javax.swing.BoxLayout.X_AXIS));
 
         LabelPanel.setBackground(new java.awt.Color(255, 255, 204));
+        LabelPanel.setPreferredSize(new java.awt.Dimension(200, 200));
         LabelPanel.setLayout(new java.awt.GridLayout(8, 0));
 
         LabelName.setFont(new java.awt.Font("Gungsuh", 0, 14)); // NOI18N
@@ -93,6 +95,7 @@ public class AddBook extends javax.swing.JFrame {
         getContentPane().add(LabelPanel);
 
         FieldPanel.setBackground(new java.awt.Color(255, 255, 204));
+        FieldPanel.setPreferredSize(new java.awt.Dimension(200, 200));
         FieldPanel.setLayout(new java.awt.GridLayout(8, 0));
 
         FieldName.setFont(new java.awt.Font("Gungsuh", 0, 14)); // NOI18N

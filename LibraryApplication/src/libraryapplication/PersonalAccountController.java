@@ -5,6 +5,8 @@
  */
 package libraryapplication;
 
+import databaselayer.Const;
+import databaselayer.DatabaseHandler;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -27,7 +29,7 @@ public class PersonalAccountController extends javax.swing.JFrame {
     //public EditBook editBook;
     //public EditReader editReader;
     public AddBook addBook;
-    //public AddReader addReader;
+    public AddReader addReader;
     //public FindBook findBook;
     //public FindReader findReader;
     
@@ -255,7 +257,7 @@ public class PersonalAccountController extends javax.swing.JFrame {
             // по аналогии с функцией удаления записей из БД определим рабочую таблицу
             case 0: // вызов соответствующей рабочей таблицы формы
                 addBook = new AddBook(dbconnect); break;
-            //case 1: addSeance = new AddSeance(connect.getDbConnection()); break;
+            case 1: addReader = new AddReader(dbconnect); break;
         }
     }//GEN-LAST:event_AddActionPerformed
 

@@ -1,4 +1,4 @@
-package libraryapplication;
+package databaselayer;
 
 public class Const {
     public static final String LIBRARIAN_TABLE = "librarian";

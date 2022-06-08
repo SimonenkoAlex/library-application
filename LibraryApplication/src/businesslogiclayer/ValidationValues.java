@@ -1,4 +1,4 @@
-package libraryapplication;
+package businesslogiclayer;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -9,7 +9,7 @@ public class ValidationValues {
         Pattern p = Pattern.compile(regex);
         Matcher m = p.matcher(phoneNumber);
         boolean b = m.matches();
-        if (b == false) throw new Exception("Неверный формат телефона \n Необходимо +7(###)###-##-##");
+        if (b == false) throw new Exception(" Неверный формат телефона \n Необходимо +7(###)###-##-##");
         else return true;
     }
     
@@ -18,7 +18,7 @@ public class ValidationValues {
         Pattern p = Pattern.compile(regex);
         Matcher m = p.matcher(time);
         boolean b = m.matches();
-        if (b == false) throw new Exception("Неверный формат времени \n Необходимо hh:mm:ss");
+        if (b == false) throw new Exception(" Неверный формат времени \n Необходимо hh:mm:ss");
         else return true;
     }
     
@@ -31,6 +31,15 @@ public class ValidationValues {
                 + "Пароль считается надежным, если он состоит из 8 или более символов,  \n"
                 + "где символом может быть английская буква, цифра и знак подчеркивания \n"
                 + "Пароль должен содержать хотя бы 1 заглавную букву, 1 маленькую букву и 1 цифру");
+        else return true;
+    }
+    
+    public boolean NumberAccount(String numberAccount) throws Exception{
+        String regex = "\\d{5}";
+        Pattern p = Pattern.compile(regex);
+        Matcher m = p.matcher(numberAccount);
+        boolean b = m.matches();
+        if (b == false) throw new Exception(" Неверный формат номера \n Необходимо 5 цифр");
         else return true;
     }
 }

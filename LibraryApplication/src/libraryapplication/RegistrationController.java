@@ -5,6 +5,8 @@
  */
 package libraryapplication;
 
+import businesslogiclayer.ValidationValues;
+import databaselayer.Const;
 import businesslogiclayer.Librarian;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
