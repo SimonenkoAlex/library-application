@@ -16,8 +16,8 @@ public class PersonalAccountController extends javax.swing.JFrame {
     public EditReader editReader;
     public AddBook addBook;
     public AddReader addReader;
-    //public FindBook findBook;
-    //public FindReader findReader;
+    public FindBook findBook;
+    public FindReader findReader;
     
     public PersonalAccountController() {
         initComponents();
@@ -316,14 +316,14 @@ public class PersonalAccountController extends javax.swing.JFrame {
     private void FindActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_FindActionPerformed
         // TODO add your handling code here:
         switch(this.SelectTable.getSelectedIndex()) {
-            //case 0: findTicket = new FindTicket(connect.getDbConnection(), TableView1); break;
-            //case 1: findSeance = new FindSeance(connect.getDbConnection(), TableView2); break;
+            case 0: findBook = new FindBook(dbconnect, TableView1); break;
+            case 1: findReader = new FindReader(dbconnect, TableView2); break;
         }
     }//GEN-LAST:event_FindActionPerformed
 
     private void QueryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_QueryActionPerformed
         // TODO add your handling code here:
-        //Query query = new Query(connect.getDbConnection());
+        QueryForm query = new QueryForm(dbconnect);
     }//GEN-LAST:event_QueryActionPerformed
 
     public DefaultTableModel createModel(String name) { 
