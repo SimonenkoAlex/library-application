@@ -1,23 +1,52 @@
 package libraryapplication;
 
+import businesslogiclayer.Reader;
 import businesslogiclayer.ValidationValues;
 import databaselayer.Const;
-import businesslogiclayer.Reader;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
 import javax.swing.JOptionPane;
 
-public class AddReader extends javax.swing.JFrame {
+public class EditReader extends javax.swing.JFrame {
     private Connection connect;
+    private String id;
     
-    public AddReader() {
+    public EditReader() {
         initComponents();
     }
-
-    public AddReader(Connection myConnect) {
-        initComponents(); 
+    
+    public EditReader(Connection myConnect, String selectRow) {
+        initComponents();
+        id = selectRow; 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE); 
         setVisible(true); 
-        connect = myConnect;
+        connect = myConnect; 
+        try { 
+            Statement stmt = connect.createStatement(); 
+            // получим строку с переданным в качестве параметра id и 
+            // представим её в виде массива для дальнейшего редактирования 
+            ResultSet rs = stmt.executeQuery("SELECT * FROM " + Const.READERS_TABLE 
+                    + " WHERE " + Const.READERS_ID + "=" + id); 
+            ResultSetMetaData md = rs.getMetaData(); 
+            while(rs.next()){ 
+                ArrayList<Object> mass = new ArrayList(); 
+                for(int i=1;i<=md.getColumnCount();i++) { 
+                    mass.add(rs.getObject(i)); 
+                } 
+                mass.toArray();
+                FieldFullName.setText(mass.get(1).toString()); 
+                FieldAddress.setText(mass.get(2).toString()); 
+                FieldPhone.setText(mass.get(3).toString());
+                FieldNumberAccount.setText(mass.get(4).toString());
+            } 
+        } 
+        catch(Exception e) { 
+            JOptionPane.showMessageDialog(this, "Error!"); 
+        }
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -29,43 +58,31 @@ public class AddReader extends javax.swing.JFrame {
     private void initComponents() {
 
         LabelPanel = new javax.swing.JPanel();
-        LabelFirstName = new javax.swing.JLabel();
-        LabelLastName = new javax.swing.JLabel();
-        LabelPatronymic = new javax.swing.JLabel();
+        LabelFullName = new javax.swing.JLabel();
         LabelAddress = new javax.swing.JLabel();
         LabelPhone = new javax.swing.JLabel();
         LabelNumberAccount = new javax.swing.JLabel();
-        Add = new javax.swing.JButton();
+        Edit = new javax.swing.JButton();
         FieldPanel = new javax.swing.JPanel();
-        FieldFirstName = new javax.swing.JTextField();
-        FieldLastName = new javax.swing.JTextField();
-        FieldPatronymic = new javax.swing.JTextField();
+        FieldFullName = new javax.swing.JTextField();
         FieldAddress = new javax.swing.JTextField();
         FieldPhone = new javax.swing.JFormattedTextField();
         FieldNumberAccount = new javax.swing.JTextField();
         Cancel = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Добавление нового читателя");
-        setPreferredSize(new java.awt.Dimension(500, 300));
+        setTitle("Редактирование читателя");
+        setPreferredSize(new java.awt.Dimension(500, 200));
         setResizable(false);
         getContentPane().setLayout(new javax.swing.BoxLayout(getContentPane(), javax.swing.BoxLayout.X_AXIS));
 
         LabelPanel.setBackground(new java.awt.Color(255, 255, 204));
-        LabelPanel.setPreferredSize(new java.awt.Dimension(200, 300));
-        LabelPanel.setLayout(new java.awt.GridLayout(7, 0));
+        LabelPanel.setPreferredSize(new java.awt.Dimension(200, 200));
+        LabelPanel.setLayout(new java.awt.GridLayout(5, 0));
 
-        LabelFirstName.setFont(new java.awt.Font("Gungsuh", 0, 14)); // NOI18N
-        LabelFirstName.setText("Фамилия");
-        LabelPanel.add(LabelFirstName);
-
-        LabelLastName.setFont(new java.awt.Font("Gungsuh", 0, 14)); // NOI18N
-        LabelLastName.setText("Имя");
-        LabelPanel.add(LabelLastName);
-
-        LabelPatronymic.setFont(new java.awt.Font("Gungsuh", 0, 14)); // NOI18N
-        LabelPatronymic.setText("Отчество");
-        LabelPanel.add(LabelPatronymic);
+        LabelFullName.setFont(new java.awt.Font("Gungsuh", 0, 14)); // NOI18N
+        LabelFullName.setText("Фамилия И.О.");
+        LabelPanel.add(LabelFullName);
 
         LabelAddress.setFont(new java.awt.Font("Gungsuh", 0, 14)); // NOI18N
         LabelAddress.setText("Адрес");
@@ -79,29 +96,23 @@ public class AddReader extends javax.swing.JFrame {
         LabelNumberAccount.setText("№ читательского билета");
         LabelPanel.add(LabelNumberAccount);
 
-        Add.setFont(new java.awt.Font("Gungsuh", 1, 14)); // NOI18N
-        Add.setText("Добавить");
-        Add.addActionListener(new java.awt.event.ActionListener() {
+        Edit.setFont(new java.awt.Font("Gungsuh", 1, 14)); // NOI18N
+        Edit.setText("Подтверждение");
+        Edit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                AddActionPerformed(evt);
+                EditActionPerformed(evt);
             }
         });
-        LabelPanel.add(Add);
+        LabelPanel.add(Edit);
 
         getContentPane().add(LabelPanel);
 
         FieldPanel.setBackground(new java.awt.Color(255, 255, 204));
-        FieldPanel.setPreferredSize(new java.awt.Dimension(200, 300));
-        FieldPanel.setLayout(new java.awt.GridLayout(7, 0));
+        FieldPanel.setPreferredSize(new java.awt.Dimension(200, 200));
+        FieldPanel.setLayout(new java.awt.GridLayout(5, 0));
 
-        FieldFirstName.setFont(new java.awt.Font("Gungsuh", 0, 14)); // NOI18N
-        FieldPanel.add(FieldFirstName);
-
-        FieldLastName.setFont(new java.awt.Font("Gungsuh", 0, 14)); // NOI18N
-        FieldPanel.add(FieldLastName);
-
-        FieldPatronymic.setFont(new java.awt.Font("Gungsuh", 0, 14)); // NOI18N
-        FieldPanel.add(FieldPatronymic);
+        FieldFullName.setFont(new java.awt.Font("Gungsuh", 0, 14)); // NOI18N
+        FieldPanel.add(FieldFullName);
 
         FieldAddress.setFont(new java.awt.Font("Gungsuh", 0, 14)); // NOI18N
         FieldPanel.add(FieldAddress);
@@ -133,28 +144,24 @@ public class AddReader extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void AddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddActionPerformed
+    private void EditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EditActionPerformed
         ValidationValues value = new ValidationValues();
         try {
             value.Telephone(FieldPhone.getText());
             value.NumberAccount(FieldNumberAccount.getText());
-            if (!FieldFirstName.equals("") || !FieldLastName.equals("") || 
-                    !FieldPatronymic.equals("") || !FieldAddress.equals("")) {
-                String firstName = FieldFirstName.getText();
-                String lastName = FieldLastName.getText();
-                String patronymic = FieldPatronymic.getText();
+            if (!FieldFullName.equals("") || !FieldAddress.equals("")) {
+                String fullName = FieldFullName.getText();
                 String address = FieldAddress.getText();
                 String phone = FieldPhone.getText();
                 String numberAccount = FieldNumberAccount.getText();
-                Reader reader = new Reader(firstName, lastName, 
-                        patronymic, address, phone, numberAccount);
+                Reader reader = new Reader(fullName, address, phone, numberAccount);
                 try {
-                    additionReader(reader);
+                    updateReader(reader);
                     this.dispose();
                 }
                 catch(Exception e) {
-                    JOptionPane.showMessageDialog(this, " Добавление новой записи в БД "
-                        + "невозможна! /n Can't add new record!");
+                    JOptionPane.showMessageDialog(this, " Невозможно редактировать записи "
+                        + "об этом читателе! /n Can't edit this reader!");
                     this.dispose();
                 }
             }
@@ -164,21 +171,17 @@ public class AddReader extends javax.swing.JFrame {
         } catch (Exception exception) {
             JOptionPane.showMessageDialog(this, exception.getMessage());
         }
-    }//GEN-LAST:event_AddActionPerformed
-    
-    public void additionReader(Reader reader) 
+    }//GEN-LAST:event_EditActionPerformed
+
+    private void updateReader(Reader reader) 
             throws ClassNotFoundException, SQLException {
-        String fullName = reader.getSurnameAndInitials(reader.getFirstName(), 
-                reader.getLastName(), reader.getPatronymic());
         // формирование запроса на добавление строки в БД
-        String query = "INSERT INTO " + Const.READERS_TABLE 
-                + "(" + Const.READERS_FULLNAME + ", " + Const.READERS_ADDRESS 
-                + ", " + Const.READERS_PHONE + ", " + Const.READERS_NUMLIBCARD 
-                +  ") VALUES('"
-                + fullName + "', '"                  // Фамилия И.О.
-                + reader.getAddress() + "', '"       // адресс
-                + reader.getPhone() + "', '"         // телефон
-                + reader.getNumberAccount() + "')";  // номер книжки
+        String query = "UPDATE " + Const.READERS_TABLE + " SET " 
+                + Const.READERS_FULLNAME + "='" + FieldFullName.getText() + "', "
+                + Const.READERS_ADDRESS + "='" + FieldAddress.getText() + "', "
+                + Const.READERS_PHONE + "='" + FieldPhone.getText() + "', "
+                + Const.READERS_NUMLIBCARD + "='" + FieldNumberAccount.getText()
+                + "' WHERE " + Const.READERS_ID + "=" + id;
         Statement stmt = connect.createStatement();
         int rs = stmt.executeUpdate(query);
     }
@@ -205,40 +208,36 @@ public class AddReader extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(AddReader.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(EditReader.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(AddReader.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(EditReader.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(AddReader.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(EditReader.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(AddReader.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(EditReader.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new AddReader().setVisible(true);
+                new EditReader().setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton Add;
     private javax.swing.JButton Cancel;
+    private javax.swing.JButton Edit;
     private javax.swing.JTextField FieldAddress;
-    private javax.swing.JTextField FieldFirstName;
-    private javax.swing.JTextField FieldLastName;
+    private javax.swing.JTextField FieldFullName;
     private javax.swing.JTextField FieldNumberAccount;
     private javax.swing.JPanel FieldPanel;
-    private javax.swing.JTextField FieldPatronymic;
     private javax.swing.JFormattedTextField FieldPhone;
     private javax.swing.JLabel LabelAddress;
-    private javax.swing.JLabel LabelFirstName;
-    private javax.swing.JLabel LabelLastName;
+    private javax.swing.JLabel LabelFullName;
     private javax.swing.JLabel LabelNumberAccount;
     private javax.swing.JPanel LabelPanel;
-    private javax.swing.JLabel LabelPatronymic;
     private javax.swing.JLabel LabelPhone;
     // End of variables declaration//GEN-END:variables
 }

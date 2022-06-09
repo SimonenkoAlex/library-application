@@ -1,22 +1,54 @@
 package libraryapplication;
 
 import databaselayer.Const;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.Statement;
+import java.util.ArrayList;
 import javax.swing.JOptionPane;
 
-public class AddBook extends javax.swing.JFrame {
+public class EditBook extends javax.swing.JFrame {
     private Connection connect;
+    private String id;
     
-    public AddBook() {
+    public EditBook() {
         initComponents();
     }
 
-    public AddBook(Connection myConnect) {
-        initComponents(); 
+    public EditBook(Connection myConnect, String selectRow) {
+        initComponents();
+        id = selectRow; 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE); 
         setVisible(true); 
-        connect = myConnect;
+        connect = myConnect; 
+        try { 
+            Statement stmt = connect.createStatement(); 
+            // получим строку с переданным в качестве параметра id и 
+            // представим её в виде массива для дальнейшего редактирования 
+            ResultSet rs = stmt.executeQuery("SELECT * FROM " + Const.BOOKS_TABLE 
+                    + " WHERE " + Const.BOOKS_ID + "=" + id); 
+            ResultSetMetaData md = rs.getMetaData(); 
+            while(rs.next()){ 
+                ArrayList<Object> mass = new ArrayList(); 
+                for(int i=1;i<=md.getColumnCount();i++) { 
+                    mass.add(rs.getObject(i)); 
+                } 
+                mass.toArray();
+                FieldName.setText(mass.get(1).toString()); 
+                FieldAuthor.setText(mass.get(2).toString()); 
+                FieldPublisher.setText(mass.get(3).toString());
+                FieldPublisherYear.setText(mass.get(4).toString());
+                FieldNumInstan.setText(mass.get(5).toString());
+                FieldCostBook.setText(mass.get(6).toString());
+                FieldVolumeBook.setText(mass.get(7).toString()); 
+            } 
+        } 
+        catch(Exception e) { 
+            JOptionPane.showMessageDialog(this, "Error!"); 
+        }
     }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -34,7 +66,7 @@ public class AddBook extends javax.swing.JFrame {
         LabelNumInstan = new javax.swing.JLabel();
         LabelCostBook = new javax.swing.JLabel();
         LabelVolumeBook = new javax.swing.JLabel();
-        Add = new javax.swing.JButton();
+        Edit = new javax.swing.JButton();
         FieldPanel = new javax.swing.JPanel();
         FieldName = new javax.swing.JTextField();
         FieldAuthor = new javax.swing.JTextField();
@@ -46,8 +78,7 @@ public class AddBook extends javax.swing.JFrame {
         Cancel = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Добавление новой книги");
-        setPreferredSize(new java.awt.Dimension(500, 400));
+        setTitle("Редактирование книги");
         setResizable(false);
         getContentPane().setLayout(new javax.swing.BoxLayout(getContentPane(), javax.swing.BoxLayout.X_AXIS));
 
@@ -83,14 +114,14 @@ public class AddBook extends javax.swing.JFrame {
         LabelVolumeBook.setText("Кол-во страниц");
         LabelPanel.add(LabelVolumeBook);
 
-        Add.setFont(new java.awt.Font("Gungsuh", 1, 14)); // NOI18N
-        Add.setText("Добавить");
-        Add.addActionListener(new java.awt.event.ActionListener() {
+        Edit.setFont(new java.awt.Font("Gungsuh", 1, 14)); // NOI18N
+        Edit.setText("Подтверждение");
+        Edit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                AddActionPerformed(evt);
+                EditActionPerformed(evt);
             }
         });
-        LabelPanel.add(Add);
+        LabelPanel.add(Edit);
 
         getContentPane().add(LabelPanel);
 
@@ -134,35 +165,33 @@ public class AddBook extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void AddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddActionPerformed
-        // формирование запроса на добавление строки в БД
-        String query = "INSERT INTO " + Const.BOOKS_TABLE + "(" + Const.BOOKS_NAME 
-                + ", " + Const.BOOKS_AUTHOR + ", " + Const.BOOKS_PUBLISHER 
-                + ", " + Const.BOOKS_PUBLISHER_YEAR + ", " + Const.BOOKS_NUM_INSTAN 
-                + ", " + Const.BOOKS_COST + ", " + Const.BOOKS_VOLUME + ") VALUES('"
-                + FieldName.getText() + "', '"          // название книги
-                + FieldAuthor.getText() + "', '"        // имя автора
-                + FieldPublisher.getText() + "', '"     // издательство
-                + FieldPublisherYear.getText() + "', '" // год издания
-                + FieldNumInstan.getText() + "', '"     // кол-во изданий
-                + FieldCostBook.getText() + "', '"      // цена книги
-                + FieldVolumeBook.getText() + "')";     // кол-во страниц
-        try {
-            Statement stmt = connect.createStatement();
-            int rs = stmt.executeUpdate(query);
-            this.dispose();
-        }
-        catch(Exception e) {
-            JOptionPane.showMessageDialog(this, " Добавление новой записи в БД "
-                    + "невозможна! /n Can't add new record!");
-            this.dispose();
-        }
-    }//GEN-LAST:event_AddActionPerformed
-
     private void CancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CancelActionPerformed
         // TODO add your handling code here:
         this.dispose();
     }//GEN-LAST:event_CancelActionPerformed
+
+    private void EditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EditActionPerformed
+        // формирование запроса на добавление строки в БД
+        String query = "UPDATE " + Const.BOOKS_TABLE + " SET " 
+                + Const.BOOKS_NAME + "='" + FieldName.getText() + "', "
+                + Const.BOOKS_AUTHOR + "='" + FieldAuthor.getText() + "', "
+                + Const.BOOKS_PUBLISHER + "='" + FieldPublisher.getText() + "', "
+                + Const.BOOKS_PUBLISHER_YEAR + "='" + FieldPublisherYear.getText() + "', "
+                + Const.BOOKS_NUM_INSTAN + "='" + FieldNumInstan.getText() + "', "
+                + Const.BOOKS_COST + "='" + FieldCostBook.getText() + "', " 
+                + Const.BOOKS_VOLUME + "='" + FieldVolumeBook.getText()
+                + "' WHERE " + Const.BOOKS_ID + "=" + id;
+        try { // передаем запрос на исполнение
+            Statement stmt = connect.createStatement();
+            int rs = stmt.executeUpdate(query);
+            this.dispose();
+        } // и выводим сообщение об ошибке в исключительной ситуации 
+        catch(Exception e) {
+            JOptionPane.showMessageDialog(this, " Невозможно редактировать записи "
+                + "по этой книге! /n Can't edit this book!");
+            this.dispose();
+        }
+    }//GEN-LAST:event_EditActionPerformed
 
     /**
      * @param args the command line arguments
@@ -181,27 +210,27 @@ public class AddBook extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(AddBook.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(EditBook.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(AddBook.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(EditBook.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(AddBook.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(EditBook.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(AddBook.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(EditBook.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new AddBook().setVisible(true);
+                new EditBook().setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton Add;
     private javax.swing.JButton Cancel;
+    private javax.swing.JButton Edit;
     private javax.swing.JTextField FieldAuthor;
     private javax.swing.JTextField FieldCostBook;
     private javax.swing.JTextField FieldName;

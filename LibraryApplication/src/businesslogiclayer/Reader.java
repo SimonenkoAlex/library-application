@@ -1,6 +1,7 @@
 package businesslogiclayer;
 
 public class Reader {
+    private String fullName;
     private String firstName;
     private String lastName;
     private String patronymic;
@@ -15,6 +16,13 @@ public class Reader {
         this.firstName = firstName;
         this.lastName = lastName;
         this.patronymic = patronymic;
+        this.address = address;
+        this.phone = phone;
+        this.numberAccount = numberAccount;
+    }
+    
+    public Reader(String fullName, String address, String phone, String numberAccount) {
+        this.fullName = fullName;
         this.address = address;
         this.phone = phone;
         this.numberAccount = numberAccount;

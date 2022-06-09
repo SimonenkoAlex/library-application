@@ -1,23 +1,19 @@
 package libraryapplication;
 
 import databaselayer.Const;
-import databaselayer.DatabaseHandler;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.Statement;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
 
 public class PersonalAccountController extends javax.swing.JFrame {
     private Connection dbconnect;
-    //public EditBook editBook;
-    //public EditReader editReader;
+    public EditBook editBook;
+    public EditReader editReader;
     public AddBook addBook;
     public AddReader addReader;
     //public FindBook findBook;
@@ -256,18 +252,23 @@ public class PersonalAccountController extends javax.swing.JFrame {
         int[] select = null;
         String id = null;
         switch(this.SelectTable.getSelectedIndex()) { // определяем рабочую таблицу
-            case 0: select = TableView1.getSelectedRows(); // определяем строку для редактирования
-            id = TableView1.getModel().getValueAt(select[0], 0).toString();
-            // так как в таблице в первой колонке размещен id записи, то после его определения
-            // передадим его и текущее соединение с БД в конструктор формы для редактирования
-            //try { editTicket = new EditTicket(con.getDbConnection(), id); }
-            //catch (Exception e) { JOptionPane.showMessageDialog(this, "Select row!"); }
-            break;
-            case 1: select = TableView2.getSelectedRows();
-            id = TableView2.getModel().getValueAt(select[0], 0).toString();
-            //try { editSeance = new EditSeance(con.getDbConnection(), id); }
-            //catch (Exception e) { JOptionPane.showMessageDialog(this, "Select row!"); }
-            break;
+            case 0: 
+                try { select = TableView1.getSelectedRows(); // определяем строку для редактирования
+                id = TableView1.getModel().getValueAt(select[0], 0).toString();
+                // так как в таблице в первой колонке размещен id записи, то после его определения
+                // передадим его и текущее соединение с БД в конструктор формы для редактирования
+                editBook = new EditBook(dbconnect, id); }
+                catch (Exception e) { JOptionPane.showMessageDialog(this, 
+                        " Выбирите строку таблицы Книги для редактирования \n "
+                                + " Select row table Books for edit!"); }
+                break;
+            case 1: try { select = TableView2.getSelectedRows();
+                id = TableView2.getModel().getValueAt(select[0], 0).toString();
+                editReader = new EditReader(dbconnect, id); }
+                catch (Exception e) { JOptionPane.showMessageDialog(this, 
+                        " Выбирите строку таблицы Читатели для редактирования \n "
+                                + " Select row table Readers for edit!"); }
+                break;
         }
     }//GEN-LAST:event_EditActionPerformed
 
